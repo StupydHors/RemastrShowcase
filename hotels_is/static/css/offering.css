@@ -1,0 +1,172 @@
+html,
+body {
+	height: 100%;
+	font-family: "Montserrat Alternates", sans-serif;
+	-webkit-font-smoothing: antialiased;
+    /*background-image: url("../assets/images/intro.jpg");*/
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-color: rgb(255, 255, 255);
+    transition: background-image 0.5s ease-in-out;
+}
+
+h1 {
+	margin: 0;
+	font-weight: 400;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-size: 60px;
+}
+
+.container-title {
+    padding: 2% 2% 2% 2%;
+}
+
+.main-title {
+    width: 100%;
+    text-align: center;
+    margin: auto;
+    color: #ffffff;
+    padding-top: 3%;
+    padding-bottom: 3%;
+    background-color: rgba(49, 49, 49, 0.295);
+}
+
+p {
+	font-size: 14px;
+	color: #9d9d9d;
+	font-family: "Montserrat Alternates", sans-serif;
+	font-weight: 500;
+	line-height: 28px;
+	margin: 0 0 15px 0;
+}
+
+img {
+	max-width: 100%;
+}
+
+a:hover,
+a:focus {
+	text-decoration: none;
+	outline: none;
+	color: #ffffff;
+}
+
+.container-filter{
+    padding: 5% 3% 5% 3%;
+}
+
+.filter-col{
+    padding-left:10px;
+    padding-right:10px;
+}
+
+.form-inline {
+    padding: 2% 2% 2% 2%;
+    color: #ffffff;
+    background-color: rgba(49, 49, 49, 0.295);
+}
+
+#numOfPeople {
+    width: 50px;
+}
+
+.form-group {
+    padding-bottom: 1%;
+}
+
+#search-button-wrap {
+    width: 30%;
+}
+
+.reservation-section {
+    align-content: center;
+    margin: auto;
+}
+
+.reservation-btn {
+    position: relative;
+    left: 8%;
+}
+
+.offer-title {
+    padding-top: 1%;
+    padding-left: 1%;
+    padding-bottom: 1%;
+    font-size: 20px;
+	font-family: "Montserrat Alternates", sans-serif;
+	font-weight: 500;
+    color: white;
+    height: 15%;
+    background-color: rgba(49, 49, 49, 0.295);
+}
+
+.offer-body {
+    color: white;
+    height: 80%;
+    background-color: rgba(49, 49, 49, 0.295);
+}
+
+.offer {
+    color: white;
+    height: 35%;
+}
+
+.offers {
+    position: relative;
+    top: 25%;
+    width: 90%;
+}
+
+.spacer {
+    height: 10px;
+}
+
+.thumbnail{
+    position: relative;
+    top: 10%;
+    width: 85%;
+    height: 85%;
+    background-size: cover;
+}
+
+.primary-info {
+    visibility: visible;
+
+}
+
+.secondary-info {
+    visibility: visible;
+}
+
+@media screen and (max-width: 650px) {
+    h1 {
+        margin: 0;
+        font-weight: 400;
+        font-family: "Montserrat Alternates", sans-serif;
+        font-size: 35px;
+    }
+
+    .reservation-section {
+        display: inline;
+    }
+    
+    .reservation-btn {
+        position: relative;
+        left: 18%;
+    }
+
+    .thumbnail{
+        width: 0%;
+        display: none;
+    }
+
+    
+    .thumbnail-wrapper{
+        width: 0%;
+        display: none;
+    }
+
+    .secondary-info {
+        display: none;
+    }
+}

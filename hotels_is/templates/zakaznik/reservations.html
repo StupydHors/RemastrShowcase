@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Správa rezervací</title>
+<script src="https://unpkg.com/feather-icons"></script>
+<!-- Load JQuery -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+    {% include 'navbar.html'%}
+
+    <div class="content">
+
+        <h1>Moje rezervace</h1>
+        <div class="scrollDown"><a href="#createRezervaceBtn">Scroll down</a></div> <!-- For scrolling all the way down the table in one-click -->
+
+        {% if reservations == none %}
+        <h2>Žádné vaše rezervace nejsou v databázi, nejdříve musíte nějaké vytvořit!</h2>
+        {% else %}
+
+        <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Začátek</th>
+                <th>Konec</th>
+                <th>Zaplaceno</th>
+                <th>Cena celkem</th>
+                <th>Stav</th>
+                <th>Operace</th>
+            </tr>
+        </thead>
+        <tbody> 
+            {% for res in reservations %}
+                <tr >
+                    <td>{{ res.datum_zacatek }}</td>
+                    <td>{{ res.datum_konec }}</td>
+                    <td>
+                        {% if res.zaplaceno is true %}
+                            <i style="color: green" data-feather="check-square"></i>
+                        {% else %}
+                            <i style="color: red" data-feather="square"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ res.finalni_cena }}</td>
+                    <td>
+                        {% if res.potvrzeno is not true %}
+                        Nepotvrzeno
+                        {% elif res.zaplaceno is true and res.check_in is not true and res.check_out is not true %}
+                        Zaplaceno
+                        {% elif res.zaplaceno is true and res.check_in is true and res.check_out is not true %}
+                        Pobyt probíhá
+                        {% else %}
+                        Pobyt proběhl
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/delete/rezervace?id={{ res.id }}">Smazat</a>
+                    </td>
+                </tr>
+            {% endfor %}  
+        </tbody>
+        </table>
+        {% endif %}
+    </div>
+<script>
+    feather.replace()
+</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Index</title>
+{% endblock %}
+
+{% block body %}
+
+    {% include 'navbar.html'%}
+
+    <div class="content">
+    <h1 id="todo">Vítejte na stránkách čokohotýlku!</h1>
+    
+    {% if current_user.is_anonymous %}
+    <p>Momentálně jste přihlášen jak anonymní uživatel. Funkce aplikace jsou vám omezené.</p>
+    <a href="/login"><button>Přihlásit se</button></a>
+    {% else %}
+    <p>Vaše role je: {{current_user.role}}</p>
+    {% endif %}
+    </div>
+{% endblock %}

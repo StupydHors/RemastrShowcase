@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" >
+<title>Přihlášení</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="sidenav">
+      <div class="login-main-text">
+         <h2>Hotýlek<br> Příhlašení</h2>
+         <p>Pro přístup do systému se prosím přihlaste.</p>
+      </div>
+   </div>
+
+   <div class="main">
+
+      <div class="col-md-6 col-sm-12">
+         <div class="login-form">
+
+            <form action="/login" method="POST">
+               <div class="form-group">
+                  <label>Email</label>
+                  <input type="text" class="form-control" placeholder="Email" name="email">
+               </div>
+               <div class="form-group">
+                  <label>Heslo</label>
+                  <input type="password" class="form-control" placeholder="Heslo" name="password">
+               </div>
+               {% if failed %}
+               <p style="color: red">Přihlášení se nezdařilo, prosím zkuste to znovu.</p>
+               {% endif %}
+               <button type="submit" class="btn btn-black">Přihlásit se</button>
+               <p style="padding-top: 10px;">Jsi tu nový? Registruj se <a href="{{url_for('register')}}" >zde!</a></p>
+               <p>Nechci se přihlašovat, zůstanu v <a href="{{url_for('index')}}" >anonymním režimu.</a></p>
+
+
+
+    <p style="color: rgba(0, 0, 0, 0.5);">- Email: zakaznik@hotylek.cz   Heslo: zakaznik  (role zákazník)<br>
+    - Email: recepcni@hotylek.cz   Heslo: recepcni  (role recepční)<br>
+    - Email: vlastnik@hotylek.cz   Heslo: vlastnik  (role vlastník)<br>
+    - Email: root                      Heslo: root      (role admin)<br></p>
+
+
+            </form>
+
+         </div>
+      </div>
+   </div>
+
+{% endblock %}

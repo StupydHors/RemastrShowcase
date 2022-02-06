@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Update</title>
+{% endblock %}
+
+{% block body %}
+  {% if entity == "uzivatel" %}
+  
+    <script>
+      function checkVal() {
+        var elem = document.getElementById("role");
+        var hotels = JSON.parse('{{ hotels|safe }}');
+        var val = elem.value;
+
+        if (val == "Recepční" || val == "Vlastník"){
+          var hotel_field = "<div id=\"hotelInput\"><label for=\"hotel\">Hotel:</label><select name=\"hotel\">";
+          for (i in hotels){
+            hotel_field += '<option value=' + hotels[i].id + '>' + hotels[i].name + '</option>'
+          }
+          hotel_field += "</select></div>"
+          elem.insertAdjacentHTML("afterend", hotel_field);
+        } else {
+          var hotelInput = document.getElementById("hotelInput");
+          if (hotelInput){
+            hotelInput.remove();
+          }
+        }
+      }
+    </script>
+
+    <div class="content">
+      <h3>Můžete změnit tyto údaje: </h3>
+      <form action="/update/uzivatel/{{uzivatel.id}}" method="POST">
+          <br>
+          <label for="email">Email:</label>
+          <input type="text" name="email", id="userRegEmail", value="{{uzivatel.email}}">
+          <br>
+          <label for="password">Heslo:</label>
+          <input type="text" name="password", id="userRegPassword", value="{{uzivatel.password}}">
+          <br>
+          <label for="role">Role:</label>
+          <select onchange="checkVal()", id="role" name="role">
+            <option value="Zákazník">Zákazník</option>
+            <option value="Recepční">Recepční</option>
+            <option value="Vlastník">Vlastník</option>
+            <option value="Administrátor">Administrátor</option>
+          </select><br>
+          <input type="submit" value="Uložit">
+      </form>
+    </div>
+    
+  {% elif entity == "hotel" %}
+    <div class="content">
+      <h3>Můžete změnit tyto údaje: </h3>
+      <form action="/update/hotel/{{hotel.id}}" method="POST">
+          <label for="name">Název</label>
+          <input type="text" name="name", id="hotelName", value="{{hotel.name}}">
+          <br>
+          <label for="address">Adresa</label>
+          <input type="text" name="address", id="hotelAddress", value="{{hotel.address}}">
+          <br>
+          <label for="rating">Počet hvězd</label>
+          <select id="hotelRating" name="rating">
+            <option value=1>1</option>
+            <option value=2>2</option>
+            <option value=3>3</option>
+            <option value=4>4</option>
+            <option value=5>5</option>
+          </select><br>
+          <input type="submit" value="Uložit">
+      </form>
+    </div>
+
+    {% elif entity == "pokoj" %}
+    <div class="content">
+      <h3>Můžete změnit tyto údaje: </h3>
+      <form action="/update/pokoj/{{pokoj.id}}" method="POST">
+          <label for="cena_za_noc">Cena za noc</label>
+          <input type="text" name="cena_za_noc", id="cena_za_noc", value="{{pokoj.cena_za_noc}}">
+          <br>
+          <label for="pocet_luzek">Počet lůžek</label>
+          <input type="text" name="pocet_luzek", id="pocet_luzek", value="{{pokoj.pocet_luzek}}">
+          <br>
+          <label for="typ">Typ</label>
+          <input type="text" name="typ", id="typ", value="{{pokoj.typ}}">
+          <br>
+          <label for="velikost">Velikost</label>
+          <input type="text" name="velikost", id="velikost", value="{{pokoj.velikost}}">
+          <br>
+          <label for="klimatizace">Klimatizace</label>
+          <input type="checkbox" name="klimatizace", id="klimatizace">
+          <br>
+          <label for="balkon">Balkón</label>
+          <input type="checkbox" name="balkon", id="balkon">
+          <br>
+          <label for="pristylka">Přistýlka</label>
+          <input type="checkbox" name="pristylka", id="pristylka">
+          <br>
+          <input type="submit" value="Uložit">
+      </form>
+    </div>
+
+  {% elif entity == "rezervace" %}
+  <div class="content">
+    <h3>Můžete změnit tyto údaje: </h3>
+    <form action="/update/rezervace/{{rez.id}}" method="POST">
+        <input type="hidden" name="id", id="rezervaceId">
+        <label for="id_pokoj">Id pokoje</label>
+        <input type="text" name="id_pokoj", id="id_pokoj", value="{{rez.id_pokoj}}">
+        <br>
+        <label for="datum_zacatek">Datum, začátek:</label>
+        <input type="text" name="datum_zacatek", id="datum_zacatek", value="{{rez.datum_zacatek}}">
+        <br>
+        <label for="datum_konec">Datum, konec:</label>
+        <input type="text" name="datum_konec", id="datum_konec", value="{{rez.datum_konec}}">
+        <br>
+        <label for="zaplaceno">Zaplaceno</label>
+        <input type="checkbox" name="zaplaceno", id="zaplaceno">
+        <br>
+        <label for="finalni_cena">Finální cena</label>
+        <input type="text" name="finalni_cena", id="finalni_cena", value="{{rez.finalni_cena}}">
+        <br>
+        <input type="submit" value="Uložit">
+    </form>
+  </div>
+{% endif %}
+
+{% endblock %}

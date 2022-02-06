@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Správa rezervací</title>
+{% endblock %}
+
+{% block body %}
+
+    {% include 'navbar.html'%}
+
+    <div class="content">
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages%}
+                    {% if message == "Heslo bylo úspěšně změněno." or message == "Údaje byly úspěšně změněny." %}
+                        <div class="mb-3" style="color: green;">{{ message }}</div>                        
+                    {% endif %}
+
+                    {% if message == "Požadavek se nezdařil." %}
+                        <div class="mb-3" style="color:red;">{{ message }}</div>                        
+                    {% endif %}
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="py-3">
+            <h2>Můj profil</h2>
+            <p class="lead">Zde si můžete prohlédnout/upravit vaše údaje.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 order-md-1" style="max-width: 500px;">
+                <form action="/update/profile" method="POST">
+                    <input type="hidden" name="id_uzivatel" value="{{current_user.id}}">
+
+                    <div class="mb-3">
+                        <label>Email:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="email" value="{{current_user.email}}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Jméno:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="name" value="{{current_user.name}}" required>          
+                        </div>
+                    </div>
+
+                    
+                    <div class="mb-3">
+                        <label>Telefon:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="phone_number" value="{{current_user.phone_number}}" required>          
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Upravit údaje</button>
+                </form>
+            </div>
+        </div>
+
+        <hr style="max-width: 500px; text-align:left;margin-left:0;">
+
+        <div class="py-3">
+            <h2>Změna hesla</h2>
+            <p class="lead">Zde si můžete změnit heslo.</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+        <div class="row">
+            <div class="col-md-8 order-md-1" style="max-width: 500px;">
+                <form action="/update/password" method="POST">
+
+                    <div class="mb-3">
+                        <label>Staré heslo:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="old_password" placeholder="Staré heslo" required>
+                        </div>
+                    </div>
+                    {% if messages %}
+                        {% for message in messages if message == "Stará hesla se neshodují."%}
+                            <div class="mb-3" style="color: red;">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+     
+
+                    <div class="mb-3">
+                        <label>Nové heslo:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="new_password" placeholder="Nové heslo" required>          
+                        </div>
+                    </div>
+
+                    
+                    <div class="mb-3">
+                        <label>Nové heslo (pro potvrzení):</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="new_password_check" placeholder="Nové heslo (znova)" required>          
+                        </div>
+                    </div>
+                    {% if messages %}
+                        {% for message in messages if message == "Kontrola nového hesla nesedí se zadaným novým heslem."%}
+                            <div class="mb-3" style="color: red;">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Změnit heslo</button>
+                </form>
+            </div>
+        </div>
+        {% endwith %}
+
+        <hr style="max-width: 500px; text-align:left;margin-left:0;">
+
+        <div class="py-3">
+            <h2>Smazat profil</h2>
+            <p class="lead">Zde si můžete smazat profil.</p>
+        </div>
+        
+        {% with messages = get_flashed_messages() %}
+        <div class="row">
+            <div class="col-md-8 order-md-1" style="max-width: 500px;">
+                <form action="/delete/profile" method="POST">
+    
+                    <div class="mb-3">
+                        <label>Zadejte vaše heslo:</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="password" placeholder="Heslo" required>
+                        </div>
+                    </div>
+                    {% if messages %}
+                        {% for message in messages if message == "Hesla se neshodují."%}
+                            <div class="mb-3" style="color: red;">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                
+                    <button class="btn btn-danger btn-lg btn-block" type="submit">Smazat profil</button>
+                </form>
+            </div>
+        </div>
+        {% endwith %}
+
+
+    </div>
+
+{% endblock %}

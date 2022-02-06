@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Registrace</title>
+{% endblock %}
+
+{% block body %}
+  {% if entity == "uzivatel" %}
+
+  <script>
+    function checkVal() {
+      var elem = document.getElementById("role");
+      var hotels = JSON.parse('{{ hotels|safe }}');
+      var val = elem.value;
+
+      if (val == "Recepční"){
+        var hotel_field = "<div id=\"hotelInput\"><label for=\"hotel\">Hotel:</label><select name=\"hotel\">";
+        for (i in hotels){
+          hotel_field += '<option value=' + hotels[i].id + '>' + hotels[i].name + '</option>'
+        }
+        hotel_field += "</select></div>"
+        elem.insertAdjacentHTML("afterend", hotel_field);
+      } else {
+        var hotelInput = document.getElementById("hotelInput");
+        if (hotelInput){
+          hotelInput.remove();
+        }
+      }
+    }
+  </script>
+
+    <div class="content">
+      <h3>Pro registraci zadejte potřebné údaje: </h3>
+      <form action="/create/create_uzivatel" method="POST" id="createUzivatelForm">
+          <label for="email">Email:</label>
+          <input type="text" name="email", id="userRegEmail">
+          <br>
+          <label for="password">Heslo:</label>
+          <input type="text" name="password", id="userRegPassword">
+          <br>
+          <label for="role">Role:</label>
+          <select onchange="checkVal()" id="role" name="role">
+            <option value="Zákazník">Zákazník</option>
+            <option value="Recepční">Recepční</option>
+            <option value="Vlastník">Vlastník</option>
+            <option value="Administrátor">Administrátor</option>
+          </select><br>
+          <input type="submit" value="Registrovat">
+      </form>
+    </div>
+    
+  {% elif entity == "hotel" %}
+    <div class="content">
+      <h3>Pro registraci hotelu zadejte potřebné údaje: </h3>
+      <form action="/create/create_hotel" method="POST">
+          <label for="name">Název</label>
+          <input type="text" name="name", id="hotelName">
+          <br>
+          <label for="address">Adresa</label>
+          <input type="text" name="address", id="hotelAddress">
+          <br>
+          <label for="rating">Počet hvězd</label>
+          <select id="hotelRating" name="rating">
+            <option value=1>1</option>
+            <option value=2>2</option>
+            <option value=3>3</option>
+            <option value=4>4</option>
+            <option value=5>5</option>
+          </select><br>
+          <input type="submit" value="Registrovat">
+      </form>
+    </div>
+
+  {% elif entity == "pokoj" %}
+  
+  <div class="content">
+    <h3>Pro registraci pokoje zadejte potřebné údaje: </h3>
+    <form action="/create/create_pokoj" method="POST">
+        <label for="hotel_id">Id Hotelu</label>
+        <select name="hotel_id", id="hotel_id">
+          {% for hotel in hotels %}
+          <option value={{hotel.id}}>{{hotel.name}}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <label for="cislo">Číslo pokoje</label>
+        <input type="text" name="cislo", id="cislo">
+        <br>
+        <label for="cena_za_noc">Cena za noc</label>
+        <input type="text" name="cena_za_noc", id="cena_za_noc">
+        <br>
+        <label for="pocet_luzek">Počet lůžek</label>
+        <input type="text" name="pocet_luzek", id="pocet_luzek">
+        <br>
+        <label for="typ">Typ</label>
+        <input type="text" name="typ", id="typ">
+        <br>
+        <label for="velikost">Velikost</label>
+        <input type="text" name="velikost", id="velikost">
+        <br>
+        <label for="klimatizace">Klimatizace</label>
+        <input type="checkbox" name="klimatizace", id="klimatizace">
+        <br>
+        <label for="balkon">Balkón</label>
+        <input type="checkbox" name="balkon", id="balkon">
+        <br>
+        <label for="pristylka">Přistýlka</label>
+        <input type="checkbox" name="pristylka", id="pristylka">
+        <br>
+        <input type="submit" value="Registrovat">
+    </form>
+  </div>
+
+  {% elif entity == "rezervace" %}
+  <div class="content">
+    <h3>Pro vytvoření rezervace zadejte potřebné údaje: </h3>
+    <form action="/create/create_rezervace" method="POST">
+      <label for="id_hotel">Hotel</label>
+      <select name="id_hotel", id="id_hotel">
+        {% for hotel in hotels %}
+        <option value={{hotel.id}}>{{hotel.name}}</option>
+        {% endfor %}
+      </select>
+      <br>
+      <label for="id_uzivatel">Uživatel</label>
+      <select name="id_uzivatel", id="id_uzivatel">
+        {% for uzivatel in uzivatele %}
+        <option value={{uzivatel.id}}> {{uzivatel.id}} ({{uzivatel.email}})</option>
+        {% endfor %}
+      </select>
+      <br>
+      <label for="id_pokoj">Id pokoje</label>
+      <input type="text" name="id_pokoj", id="id_pokoj">
+      <br>
+      <label for="datum_zacatek">Datum, začátek:</label>
+      <input type="text" name="datum_zacatek", id="datum_zacatek">
+      <br>
+      <label for="datum_konec">Datum, konec:</label>
+      <input type="text" name="datum_konec", id="datum_konec">
+      <br>
+      <label for="zaplaceno">Zaplaceno</label>
+      <input type="checkbox" name="zaplaceno", id="zaplaceno">
+      <br>
+      <label for="finalni_cena">Finální cena</label>
+      <input type="text" name="finalni_cena", id="finalni_cena">
+      <br>
+        <input type="submit" value="Registrovat">
+    </form>
+  </div>
+{% endif %}
+
+{% endblock %}

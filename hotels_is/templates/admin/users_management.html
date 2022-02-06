@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Správa uživatelů</title>
+{% endblock %}
+
+{% block body %}
+
+    {% include 'navbar.html'%}
+
+
+    <!-- Script for toggling rows in the table in order to expand themselves -->
+    <script type="text/javascript">
+    function show_hide_row(row){
+        $("#"+row).fadeToggle(500);
+    }
+    </script>
+    
+    <!-- CONTENT -->
+    <div class="content">
+
+        <h1>Uživatelé</h1>
+        <div class="scrollDown"><a href="#createUzivatelBtn">Scroll down</a></div> <!-- For scrolling all the way down the table in one-click -->
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages if message == "Při vytváření uživatele došlo k chybě!" %}         
+                        <div class="mb-3" style="color:red;">{{ message }}</div>                        
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if users|length < 1 %}
+        <h2>Žádní uživatelé nejsou v databázi, nejdříve musíte nějaké vytvořit!</h2>
+        {% else %}
+
+        <!-- TABLE filled with users -->
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Jméno</th>
+                    <th>Telefonní číslo</th>
+                    <th>Heslo (Hash)</th>
+                    <th>Role</th>
+                    <th>Operace</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <!-- Visible row (onClick will expand this row)-->
+                    <tr onclick="show_hide_row('hidden_row{{loop.index}}');">
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.name}}</td>
+                        <td>{{ user.phone_number}}</td>
+                        <td style="max-width: 5%;"><input type="text", value="{{user.password}}" readonly></td>
+                        <td>{{ user.role }}</td>
+                        <td onclick="event.stopPropagation();"> <!-- Ignores OnClick event when buttons are pressed -->
+                            <a href="/delete/uzivatel?id={{ user.id }}"><button type="button" class="btn btn-danger">Smazat</button></a>
+                            {% if user.role == 'Vlastník' %}
+                            <a href="owners/vlastnik/{{ user.id }}"><button type="button" class="btn btn-warning">Upravit vlastnictví</button></a>
+                            {% endif %}
+                        </td>
+                        
+                    </tr>
+                    <!-- Hidden row, will become visible once toggled by previous row -->
+                    <tr id="hidden_row{{loop.index}}" class="hidden_row">
+                        <!-- Update form -->
+                        <form action="/update/uzivatel/{{user.id}}" method="POST">
+                            <td>{{ user.id }}</td>
+                            <td><input type="email" name="email" id="userRegEmail" value="{{user.email}}" required></td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.phone_number}}</td>
+                            <td><input type="text" name="password" id="userRegPassword" placeholder="Zadejte nové heslo"></td>
+                            <td><select onchange="checkVal()", id="role" name="role">
+                                <option value="Zákazník" {% if user.role == 'Zákazník' %} selected {% endif %}>Zákazník</option>
+                                <option value="Recepční" {% if user.role == 'Recepční' %} selected {% endif %}>Recepční</option>
+                                <option value="Vlastník" {% if user.role == 'Vlastník' %} selected {% endif %}>Vlastník</option>
+                                <option value="Admin" {% if user.role == 'Admin' %} selected {% endif %}>Administrátor</option>
+                            </select></td>
+                            <td>
+                                <input class="btn btn-success" type="submit" value=" Uložit ">
+                            </td>                                 
+                        </form>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% endif %}
+
+        <!-- CREATE USER PART -->
+        <script>
+            function checkRole() {
+              var elem = document.getElementById("roleUpdate");
+              var hotels = JSON.parse('{{ hotels|safe }}');
+              var val = elem.value;
+              console.log(val);
+        
+              if (val == "Recepční"){
+                var hotel_field = "<div id=\"hotelInput\"><label for=\"hotel\">Hotel:</label><select name=\"hotel\">";
+                for (i in hotels){
+                  hotel_field += '<option value=' + hotels[i].id + '>' + hotels[i].name + '</option>'
+                }
+                hotel_field += "</select></div>"
+                elem.insertAdjacentHTML("afterend", hotel_field);
+              } else {
+                var hotelInput = document.getElementById("hotelInput");
+                if (hotelInput){
+                  hotelInput.remove();
+                }
+              }
+            }
+          </script>
+        
+              <h3>Přidat uživatele: </h3>
+              <form action="/create/create_uzivatel" method="POST" id="createUzivatelForm">
+                  <label for="email">Email:</label>
+                  <input type="email" name="email", id="userRegEmail" required>
+                  {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages if message == "Email je již zabraný."%}         
+                                <div style="color:red;">{{ message }}</div>                        
+                        {% endfor %}
+                    {% endif %}
+                  {% endwith %}
+                  <br>
+                  <label for="jmeno">Jméno:</label>
+                  <input type="text" name="name", id="name" required>
+                  <br>
+                  <label for="jmeno">Telefonní číslo:</label>
+                  <input type="text" name="phone_number", id="phone_number" required>
+                  <br>
+                  <label for="password">Heslo:</label>
+                  <input type="text" name="password", id="userRegPassword" required>
+                  <br>
+                  <label for="role">Role:</label>
+                  <select onchange="checkRole()" id="roleUpdate" name="role">
+                    <option value="Zákazník">Zákazník</option>
+                    <option value="Recepční">Recepční</option>
+                    <option value="Vlastník">Vlastník</option>
+                    <option value="Admin">Administrátor</option>
+                  </select><br>
+                  <input class="btn btn-primary" type="submit" value="Přidat uživatele">
+              </form>
+    
+    <!-- End of CONTENT -->
+    </div> 
+
+{% endblock %}

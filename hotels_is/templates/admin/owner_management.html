@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Uprava vlastnicví</title>
+{% endblock %}
+
+{% block body %}
+  {% if entity == "vlastnik" %}
+    <div class="content">
+        <h3>Upravit vlastnictví: </h3>
+        <form action="/update/vlastnik/{{uzivatel.id}}" method="POST">
+          <br>
+          <label for="email">Uzivatel:</label>
+          <label name="email" id="userRegEmail">{{uzivatel.email}}</label>
+          <br>
+            <td>
+                {% for hotel in hotels %}
+                    {% if hotel.id in vlastnena_id %}
+                        <input type="checkbox" id="{{ hotel.id }}" name="{{ hotel.name }}" value="{{ hotel.name }}" checked>
+                        <label for="{{ hotel.id }}">{{ hotel.name }}</label><br>
+                    {% else %}
+                        <input type="checkbox" id="{{ hotel.id }}" name="{{ hotel.name }}" value="{{ hotel.name }}">
+                        <label for="{{ hotel.id }}">{{ hotel.name }}</label><br>
+                    {% endif %}
+                {% endfor %}
+            </td>
+          <br>
+          <input type="submit" value="Uložit">
+        </form>
+    </div>
+{% endif %}
+
+{% endblock %}

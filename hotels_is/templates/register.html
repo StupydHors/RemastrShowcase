@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" >
+<title>Registrace</title>
+{% endblock %}
+
+{% block body %}
+
+      <div class="sidenav">
+        <div class="login-main-text">
+           <h2>Hotýlek<br> Registrace</h2>
+           <p>Pro přístup do systému se prosím zaregistrujte.</p>
+        </div>
+     </div>
+  
+     <div class="main">
+  
+        <div class="col-md-6 col-sm-12">
+           <div class="login-form">
+  
+              <form action="/register" method="POST">
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" class="form-control" placeholder="Email" name="email" required>
+                  </div>
+                  
+                  {% with messages = get_flashed_messages() %}
+                     {% if messages %}
+                        {% for message in messages if message == "Email je již zabraný."%}         
+                                 <div class="mb-3" style="color:red;">{{ message }}</div>                        
+                        {% endfor %}
+                     {% endif %}
+                  {% endwith %}
+                  
+                  {% if not formdata %}
+
+                     <div class="form-group">
+                        <label>Jméno</label>
+                        <input type="text" class="form-control" placeholder="Jméno" name="name" required>
+                     </div>
+                     <div class="form-group">
+                        <label>Telefonní číslo</label>
+                        <input type="text" class="form-control" placeholder="Telefonní číslo" name="phone_number" required>
+                     </div>
+                     <div class="form-group">
+                        <label>Heslo</label>
+                        <input type="password" class="form-control" placeholder="Heslo" name="password" required>
+                     </div>
+
+                  {% else %}
+
+                     <div class="form-group">
+                        <label>Jméno</label>
+                        <input type="text" class="form-control" placeholder="Jméno" name="name" value="{{formdata['name']}}" required>
+                     </div>
+                     <div class="form-group">
+                        <label>Telefonní číslo</label>
+                        <input type="text" class="form-control" placeholder="Telefonní číslo" name="phone_number" value="{{formdata['phone_number']}}" required>
+                     </div>
+                     <div class="form-group">
+                        <label>Heslo</label>
+                        <input type="password" class="form-control" placeholder="Heslo" name="password" value="{{formdata['password']}}" required>
+                     </div>
+
+                  {% endif %}
+
+                 <button type="submit" class="btn btn-black">Registrovat</button>
+              </form>
+  
+           </div>
+        </div>
+     </div>
+
+{% endblock %}

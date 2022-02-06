@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Správa rezervací</title>
+<!-- Load JQuery -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+<script type="text/javascript">
+    function showPassword(){
+       var hidden_flag = document.getElementById("divPassword").hidden
+
+       if(hidden_flag){
+            document.getElementById("divPassword").hidden = false
+            document.getElementById("heslo").required = true
+       }
+       else{
+           document.getElementById("divPassword").hidden = true
+           document.getElementById("heslo").required = false
+
+       }
+    }
+    function myFunction(){
+        var date_od,date_do;
+        var today = new Date(new Date().toDateString());
+
+        date_od = document.getElementById("od").value;
+        date_do = document.getElementById("do").value;
+
+        if(date_od == "" || date_do == ""){
+            document.getElementById("finalni_cena").value = "Zadejte prosím dobu pobytu";
+            return;
+        }
+
+        date_od = new Date(date_od);
+        date_do = new Date(date_do);
+
+        if(date_od < today || date_do < today){
+            document.getElementById("od").value = ""
+            document.getElementById("do").value = ""
+            document.getElementById("finalni_cena").value = "Zadejte prosím dobu pobytu";
+            alert("Zadali jste nevalidní datum.");
+            return;
+        }
+ 
+        var difference = date_do.getTime() - date_od.getTime();
+        var days = Math.ceil(difference / (1000 * 3600 * 24));
+
+        if (days <= 0){
+            document.getElementById("od").value = ""
+            document.getElementById("do").value = ""
+            document.getElementById("finalni_cena").value = "Zadejte prosím dobu pobytu";
+            alert("Zadali jste nevalidní datum.");
+            return;
+        }
+        
+        var cena_za_noc = parseInt("{{result.room_cena}}");
+        var pocet_osob = parseInt(document.getElementById("pocet_hostu").value);
+      
+        document.getElementById("finalni_cena").value = (days*cena_za_noc*pocet_osob);
+    }  
+</script>
+{% endblock %}
+
+{% block body %}
+    {% include 'navbar.html'%}
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>Shrnutí objednávky</h2>
+            <p class="lead">Prosím zkontrolujte si objednávku</p>
+        </div>
+        <div class="row">
+            <div class="col-md-8 order-md-1">
+                <h4 class="mb-3">Objednávka</h4>
+                <form action="/create/create_rezervace" method="POST">
+                    <input type="hidden" name="id_uzivatel" value="{{current_user.id}}">
+                    <div class="mb-3">
+                        <label>Hotel:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="hotel" value="{{result.name_hotel}}" readonly>
+                            <input type="hidden" name="id_hotel" value="{{result.id_hotel}}" >
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label>Pokoj:</label>
+                        <div class="input-group">
+                            <input type="hidden" name="id_pokoj" class="form-control" id="pokoj" value="{{result.id_pokoj}}">
+                            <input type="text" class="form-control" value="Typ pokoje: {{result.room_type}}" readonly>
+                            <input type="text" class="form-control" value="Počet pokojů: {{result.room_velikost}}" readonly>          
+                        </div>
+                        <div class="input-group">
+                            {%if result.room_klimatizace%}
+                            <input type="text" class="form-control" value="Klimatizace: Ano" readonly>
+                            {%else%}
+                            <input type="text" class="form-control" value="Klimatizace: ne" readonly>
+                            {%endif%}
+                            {%if result.room_balkon%}
+                            <input type="text" class="form-control" value="Balkon: Ano" readonly>
+                            {%else%}
+                            <input type="text" class="form-control" value="Balkon: ne" readonly>
+                            {%endif%}
+                            {%if result.room_pristylka%}
+                            <input type="text" class="form-control" value="Přistýlka: Ano" readonly>
+                            {%else%}
+                            <input type="text" class="form-control" value="Přistýlka: ne" readonly>
+                            {%endif%}  
+                        </div>
+                    </div>
+                    {% if current_user.is_anonymous %}
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <p>Email: <input type="email"  name="email_uzivatel" required></p>
+                        </div> 
+                        <div class="input-group">
+                            <label for="registrace">Chcete si u nás vytvořit účet? </label>
+                            <input onchange="showPassword()" type="checkbox" name="registrace" id="registrace">
+                        </div>
+                        <div id="divPassword" hidden>
+                            <p>Jméno: <input type="text" name="name"></p>
+                            <p>Telefoní číslo: <input type="text" name="phone_number"></p>
+                            <p>Heslo: <input type="text" name="heslo" id="heslo"></p>
+                           
+                        </div>
+                    </div>
+                    {%else%}
+                        <input type="hidden" name="email_uzivatel" value="{{current_user.email}}">
+                    {% endif %}
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <p>Od: <input onchange="myFunction()" type="date" id="od" class="form-control" name="datum_zacatek" value="{{result.datum_zacatek}}" required></p>
+                            <p>Do: <input onchange="myFunction()" type="date" id="do" class="form-control" name="datum_konec" value="{{result.datum_konec}}" required></p>
+                        </div>
+                        <div class="input-group">
+                            <p>Počet osob: <input onchange="myFunction()" type="number" id="pocet_hostu" name="pocet_hostu" min="1" max="6" value="{{result.room_pocet_osob}}"></p>
+                        </div> 
+                        <div class="input-group">
+                            <p>Zaplatit ihned: <input type="checkbox" name="zaplaceno"></p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address">Cena:</label>
+                        <input type="text" class="form-control" name="finalni_cena" id="finalni_cena" readonly>
+                    </div>   
+                    <hr class="mb-4">
+                    <input type="hidden" name="override_url" value="true">
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Vytvořit rezervaci</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        myFunction();       
+    </script>
+{% endblock %}

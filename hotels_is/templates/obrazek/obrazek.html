@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Obrazek</title>
+{% endblock %}
+
+{% block body %}
+
+    {% include 'navbar.html'%}
+
+    <div class="container" style="top: 3%; position: relative;">
+        <div class="row">
+            {% for obrazek in obrazky_db %}
+                <div class="col-sm">
+                        <img src="{{ url_for('static', filename='uploads/' + obrazek.path_to_image) }}" class="img-thumbnail">
+                        <div>{{ obrazek.path_to_image }}</div>
+                        <a href="/delete/obrazek?id={{obrazek.id}}"> Odstranit </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="content">
+        <h3>Pro přidání databázového objektu obrázku zadejte potřebné údaje: </h3>
+        <p>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class=flashes>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </p>
+        {% if filename %}
+            <div>
+                <h1>Obrázek {{ filename }} byl úspěšně přidán.</h1>
+            </div>
+        {% endif %}
+
+        <form method="post" action="/obrazek/" enctype="multipart/form-data">
+            <dl>
+                <p>
+                    <input type="file" name="file" autocomplete="off" required>
+                </p>
+            </dl>
+            <p>
+                <input class="btn btn-primary" type="submit" value="Nahrát obrázek">
+            </p>
+        </form>
+    </div>
+    
+{% endblock %}

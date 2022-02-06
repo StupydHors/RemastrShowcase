@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Chyba {{error_code}}</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="error">
+        <div style="position: relative; top: 40%;">
+            <p style="font-size: 60; font-weight:900;">Chyba {{error_code}}</p>
+            <p>{{error_message}}</p>
+            <a class="btn btn-primary" href="/everyone/offering" >Přejít na hlavní stránku</a>
+        </div>
+    </div>
+
+{% endblock %}

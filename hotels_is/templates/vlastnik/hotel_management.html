@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Správa rezervací</title>
+<!-- Load JQuery -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+    {% include 'navbar.html'%}
+
+
+    <!-- Script for toggling rows in the table in order to expand themselves -->
+    <script type="text/javascript">
+        function show_hide_row(row){
+            $("#"+row).fadeToggle(500);
+        }
+    </script>
+
+    <div class="content">
+        <h1>Správa hotelů</h1>
+        <div class="scrollDown"><a href="#createHotelBtn">Scroll down</a></div> <!-- For scrolling all the way down the table in one-click -->
+
+        {% if hotels|length < 1 %}
+        <h2>Žádné hotely nejsou v databázi, nejdříve musíte nějaké přidat!</h2>
+        {% else %}
+
+
+        <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Název</th>
+                <th>Addresa hotelu</th>
+                <th>Hodnocení</th>
+                <th>Vlastnící</th>
+                <th>Operace</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hotel in hotels %}
+                <tr onclick="show_hide_row('hidden_row{{loop.index}}');">
+                    <td>{{ hotel.id }}</td>
+                    <td>{{ hotel.name }}</td>
+                    <td>{{ hotel.address }}</td>
+                    <td>{{ hotel.rating }}</td>
+                    <td>
+                        {% for vlastnik in hotel.vlastnici %}
+                            <a href="/update/uzivatel?id={{ vlastnik.id }}">{{ vlastnik.email }}</a>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="/delete/hotel?id={{ hotel.id }}"><button type="button" class="btn btn-danger">Smazat</button></a>
+                    </td>
+                </tr>
+
+
+                <!-- Hidden row, will become visible once toggled by previous row -->
+                <tr id="hidden_row{{loop.index}}" class="hidden_row">
+                    <!-- Update form -->
+                    <form action="/update/hotel/{{hotel.id}}" method="POST">
+                        <td>{{ hotel.id }}</td>
+                        <td><input type="text" name="name_hotel" id="name_hotel" value="{{hotel.name}}"></td>
+                        <td><input type="text" name="address_hotel" id="address_hotel" value="{{hotel.address}}"></td>
+                        <td><input type="number" min="1" max="5" name="rating_hotel" id="rating_hotel" value="{{hotel.rating}}"></td>
+                        <td><!-- Empty -- cant change owners from here --></td>
+                        <td>
+                            <input class="btn btn-success" type="submit" value=" Uložit ">
+                        </td>
+                    </form>
+                </tr>
+
+
+            {% endfor %}
+        </tbody>
+        </table>
+        {% endif %}
+
+            <h3>Přidat hotel: </h3>
+            <form action="/create/create_hotel" method="POST">
+                <label for="name">Název</label>
+                <input type="text" name="name" id="hotelName" required>
+                <br>
+                <label for="address">Adresa</label>
+                <input type="text" name="address" id="hotelAddress" required>
+                <br>
+                <label for="rating">Počet hvězd</label>
+                <select id="hotelRating" name="rating" required>
+                  <option value=1>1</option>
+                  <option value=2>2</option>
+                  <option value=3>3</option>
+                  <option value=4>4</option>
+                  <option value=5>5</option>
+                </select><br>
+                <input class="btn btn-primary" type="submit" value="Přidat hotel">
+            </form>
+
+    </div>
+
+{% endblock %}

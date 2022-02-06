@@ -1,0 +1,52 @@
+body, html {
+    margin: 0;
+    font-family: sans-serif;
+    scroll-behavior: smooth;
+}
+
+h1{
+    text-align: left;
+}
+
+.form {
+    margin-top: 20px;
+}
+
+div.content {
+    padding: 30px;
+    width: 100%;
+    display: flexbox;
+}
+
+#userName {
+    width: 70%;
+}
+
+a,
+a:focus,
+a:hover {
+  color: rgb(0, 162, 255);
+}
+
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:focus {
+  color: #333;
+  text-shadow: none;
+  background-color: #fff;
+  border: .05rem solid #fff;
+}
+
+.error {
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    color: white;
+}
+
+.vl {
+    border-left: 1px solid #999;
+}

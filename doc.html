@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Projekt IIS</title>
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+
+        td, th {
+            border: 1px solid black;
+            padding: 0.3em 0.5em;
+            text-align: left;
+        }
+
+        dt {
+            font-weight: bold;
+            margin-top: 0.5em;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Zkontrolujte prosím nastavení kódování v hlavičce dokumentu
+     podle použitého editoru -->
+
+<h1>Hotel: rezervace a správa ubytování </h1>
+
+<dl>
+    <dt>Autoři</dt>
+    <dd>Rein Michal <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+        <a href="mailto:xautor01@stud.fit.vutbr.cz">xreinm00@stud.fit.vutbr.cz</a> -
+        <ul>
+            <li>Sestavení datových modelů SQL dle ER diagramu</li>
+            <li>Nastavení Flask framoworku</li>
+            <li>Připojení na databázový systém</li>
+            <li>Hosting na Azure</li>
+            <li>Zakladní operace nad databází (přidat/odebrat/upravit)</li>
+            <li>Login system</li>
+        </ul>
+    </dd>
+    <dd>Motyčka Ondřej <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+        <a href="mailto:xautor02@stud.fit.vutbr.cz">xmotyc07@stud.fit.vutbr.cz</a> -
+        <ul>
+            <li>Vizuální design webu</li>
+            <li>Systém pro přidávání rezervací</li>
+            <li>Prohlížení rezervací</li>
+            <li>Nabídka pokojů</li>
+        </ul>
+    </dd>
+    <dd>Kropáček Vojtěch     <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+        <a href="mailto:xautor03@stud.fit.vutbr.cz">xkropa07@stud.fit.vutbr.cz</a> -
+        <ul>
+            <li>Přidání majitelů hotelů</li>
+            <li>Systém pro nahrávání obrázků</li>
+            <li>Přiřazení obrázků pro pokoje</li>
+            <li>Dokumentace</li>
+            <li>Návrh databáze ER diagramem</li>
+            <li>Vytvoření Use-Case diagramu</li>
+        </ul>
+    </dd>
+    <dt>URL aplikace</dt>
+    <dd>
+        <a href=" https://cokohotylek.azurewebsites.net/">
+            https://cokohotylek.azurewebsites.net/
+    </a>
+        <p>
+            Poznámka: Je možné že server bude nabíhat až minutu od prvního požadavku.
+            Toto omezení je způsobené hostingem na Azure serverech které při dlouhém nepoužívání hybernují.
+        </p>
+    </dd>
+</dl>
+
+<h2>Uživatelé systému pro testování</h2>
+<p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
+<table>
+    <tr>
+        <th>Login</th>
+        <th>Heslo</th>
+        <th>Role</th>
+    </tr>
+    <tr>
+        <td>root</td>
+        <td>root</td>
+        <td>Administrátor</td>
+    </tr>
+    <tr>
+        <td>uzivatel@cokohotylek.cz</td>
+        <td>uzivatel</td>
+        <td>Zákazník</td>
+    </tr>
+    <tr>
+        <td>recepcni@cokohotylek.cz</td>
+        <td>recepcni</td>
+        <td>Recepční</td>
+    </tr>
+    <tr>
+        <td>vlastnik@cokohotylek.cz</td>
+        <td>vlastnik</td>
+        <td>Vlastník</td>
+    </tr>
+</table>
+
+<h2>Implementace</h2>
+
+<p>Use case diagram</p>
+<img src="use_case.png"/>
+
+<ul>
+    <li>
+        Endpointy naší aplikace se obecně nachází ve složce "hotel_is/blueprints"
+    </li>
+    <li>
+        Pro společnou funkcionalitu celého systému slouží soubor "everyone.py". Mezi tyto funkce patří hlavně prohlížení nabídek a vytvoření rezervace.
+    </li>
+    <li>
+        Funkce které se nanachází ve specifickém případu užití jsme zařadili do souboru "routes.py".
+        Tento soubor tedy zpracovává hlavně přihlášení, registraci a odhlášení uživatelů.
+    </li>
+    <li>
+        Z use-case diagramu vyplývá že jedinou funkcionalitu navíc kterou systém poskytuje registrovanému zákazníkoví je zobrazení jeho rezervací.
+        Tato funkce se nachází v souboru "zakaznik.py"
+    </li>
+    <li>
+        Soubor "recepcni.py" se soustředí na poskytování funkcionality pro recepční.
+        Mezi tyto funkce patří hlavně manipulace s rezervacemi a pokoji.
+        Hlavní funkce souboru "reservations_managment()" slouží pro úpravu rezervací jak pro recepční tak i pro vlastníka nebo admina systému.
+    </li>
+    <li>
+        Roli vlastníka obsluhuje soubor "vlastnik.py". Mezi vlastníkovy pravomoci patří hlavně správa pokojů a hotelů.
+        Funkce v tomto souboru mají opět více využití a svou funkcionalitu poskytují i adminovi systému.
+    </li>
+    <li>
+        Administrátorské funkce se nachází v souboru "admin.py". Mezi jejich nejdůležitější funkci patří měnění role uživatele.
+    </li>
+    <li>
+        Velká část funkcionality byla oddělane do souborů "update.py", "delete.py" a "create.py".
+        Toto rozdělení do souborů tedy obstarává úpravu, mazání a přidávání entit do databáze dle "standardu" CRUD.
+    </li>
+</ul>
+
+<h3>Databáze</h3>
+<img src="schema.png"/>
+
+<h2>Instalace</h2>
+
+Stručně popište:
+<ul>
+    <li>Server vyžaduje verzi pythonu aspoň 3.6
+        <ul><li>Ten lze stáhnout například zde <a href="https://www.python.org/downloads/release/python-360/">https://www.python.org/downloads/release/python-360/</a></li></ul>
+    </li>
+    <li>
+        Požadavky/komponenty nutné pro úspěšné spuštění a provozování serveru
+        <ul>
+            <li>certifi==2020.6.20</li>
+            <li>click==7.1.2</li>
+            <li>Flask==1.1.2</li>
+            <li>Flask-Login==0.5.0</li>
+            <li>Flask-SQLAlchemy==2.4.4</li>
+            <li>flask-appbuilder==3.1.1</li>
+            <li>itsdangerous==1.1.0</li>
+            <li>Jinja2==2.11.2</li>
+            <li>MarkupSafe==1.1.1</li>
+            <li>pymssql==2.1.5</li>
+            <li>pyodbc===4.0.1</li>
+            <li>SQLAlchemy==1.3.20</li>
+            <li>Werkzeug==1.0.1</li>
+            <li>wincertstore==0.2</li>
+            <li>pillow==8.0.1</li>
+            <li>requests==2.24.0</li>
+        </ul>
+    </li>
+    <li>Dále budeme potřebovat nástroje pro práci s databází nainstalované na hostovacím systému.
+        Například pro windows se tyto nástroje dají nainstalovat pomocí programu "Visual Studio Installer" po kliknutí na "upravit"
+        stačí přidat z kolonky "Ukládání a zpracování dat" komponentu "SQL Server Data Tools"</li>
+    <li>Pro Python potřebujeme knihovnu pro zpracování obrázků a balíček pro práci s databází</li>
+    <li>Ty lze nainstalovat pomocí balíčkového manageru PIP</li>
+    <ul>
+        <li>Nainstalujeme je tedy pomocí příkazu "pip install pillow" (alternativně "pip install image")</li>
+        <li>a "pip install pyodbc"</li>
+    </ul>
+    <li>Dále potřebuje mikro framework Flask a jeho moduly
+        <ul><li>Pomocí PIP opět "pip install flask"</li>
+        <li>Další moduly flasku "pip install flask-sqlalchemy", "pip install flask-appbuilder" a "pip install flask_login"</li></ul>
+    </li>
+    <li>Server se připojuje na vzdálenou databázi která je hostována na Azure serverech od firmy Microsoft. A proto není třeba nic nastavovat.</li>
+    <li>Nakonec server spustíme pomocí skriptu "run.py"</li>
+</ul>
+
+<h2>Známé problémy</h2>
+<p>
+    Jeden z problémů který se vyskytuje v projektu je naprosto nekonzistentní mixování anglického a českého jazyka.
+Od jmen proměnných a funkcí až po komentáře a jména souborů.
+</p>
+</body>
+</html>
